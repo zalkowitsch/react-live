@@ -1,6 +1,6 @@
 {
-  "name": "react-live",
-  "version": "2.2.2",
+  "name": "@stp-systems/react-live",
+  "version": "1.0.0",
   "description": "A production-focused playground for live editing React code",
   "main": "dist/react-live.cjs.js",
   "typings": "./typings/react-live.d.ts",
@@ -8,6 +8,7 @@
   "module": "dist/react-live.es.js",
   "license": "MIT",
   "scripts": {
+    "deploy": "node deploy.js",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "storybook:build": "build-storybook -c .storybook -o .out",
     "prebuild:lib": "rm -rf lib/*",
@@ -72,13 +73,13 @@
     "react-live.css",
     "typings/react-live.d.ts"
   ],
-  "author": "Phil Plückthun <phil@plckthn.me> (https://github.com/philpl)",
+  "author": "Arkady Zalkowitsch <arkady@stp-systems.com> (https://github.com/arkadyzalko)",
   "bugs": {
-    "url": "https://github.com/philpl/react-live/issues"
+    "url": "https://github.com/stp-systems/react-live/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/philpl/react-live.git"
+    "url": "git+https://github.com/stp-systems/react-live.git"
   },
   "engines": {
     "npm": ">= 2.0.0",
