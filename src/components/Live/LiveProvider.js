@@ -1,104 +1,127 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { generateElement, renderElementAsync } from '../../utils/transpile'
+import cn from '../../utils/cn'
+import Style from '../Editor/Style'
 
-import LiveContext from './LiveContext';
-import { generateElement, renderElementAsync } from '../../utils/transpile';
+export const LiveContextTypes = {
+  live: PropTypes.shape({
+    code: PropTypes.string,
+    error: PropTypes.string,
 
-export default class LiveProvider extends Component {
+    onError: PropTypes.func,
+    onChange: PropTypes.func,
+
+    element: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+      PropTypes.element,
+      PropTypes.func
+    ])
+  })
+}
+
+class LiveProvider extends Component {
+  static childContextTypes = LiveContextTypes
+
   static defaultProps = {
     code: '',
-    noInline: false,
-    language: 'jsx',
-    disabled: false
-  };
-
-  static propTypes = {
-    children: PropTypes.children,
-    code: PropTypes.string,
-    disabled: PropTypes.bool,
-    language: PropTypes.string,
-    noInline: PropTypes.bool,
-    scope: PropTypes.object,
-    theme: PropTypes.object,
-    transformCode: PropTypes.node
-  };
-
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
-    const { code, scope, transformCode, noInline } = this.props;
-
-    this.transpile({ code, scope, transformCode, noInline });
+    mountStylesheet: true,
+    noInline: false
   }
 
-  componentDidUpdate({
-    code: prevCode,
-    scope: prevScope,
-    noInline: prevNoInline,
-    transformCode: prevTransformCode
-  }) {
-    const { code, scope, noInline, transformCode } = this.props;
-    if (
-      code !== prevCode ||
-      scope !== prevScope ||
-      noInline !== prevNoInline ||
-      transformCode !== prevTransformCode
-    ) {
-      this.transpile({ code, scope, transformCode, noInline });
-    }
+  static propTypes = {
+    className: PropTypes.string,
+    code: PropTypes.string,
+    scope: PropTypes.object,
+    mountStylesheet: PropTypes.bool,
+    noInline: PropTypes.bool,
+    transformCode: PropTypes.func
   }
 
   onChange = code => {
-    const { scope, transformCode, noInline } = this.props;
-    this.transpile({ code, scope, transformCode, noInline });
-  };
+    const { scope, transformCode, noInline } = this.props
+    this.transpile({ code, scope, transformCode, noInline })
+  }
 
   onError = error => {
-    this.setState({ error: error.toString() });
-  };
+    this.setState({ error: error.toString() })
+  }
 
   transpile = ({ code, scope, transformCode, noInline = false }) => {
     // Transpilation arguments
     const input = {
       code: transformCode ? transformCode(code) : code,
       scope
-    };
-
-    const errorCallback = err =>
-      this.setState({ element: undefined, error: err.toString() });
-    const renderElement = element => this.setState({ ...state, element });
+    }
+    const errorCallback = err => this.setState({ element: undefined, error: err.toString() })
+    const renderElement = element => this.setState({ ...state, element })
 
     // State reset object
-    const state = { unsafeWrapperError: undefined, error: undefined };
+    const state = { unsafeWrapperError: undefined, error: undefined }
 
     try {
       if (noInline) {
-        this.setState({ ...state, element: null }); // Reset output for async (no inline) evaluation
-        renderElementAsync(input, renderElement, errorCallback);
+        this.setState({ ...state, element: null }) // Reset output for async (no inline) evaluation
+        renderElementAsync(input, renderElement, errorCallback)
       } else {
-        renderElement(generateElement(input, errorCallback));
+        renderElement(
+          generateElement(input, errorCallback)
+        )
       }
     } catch (error) {
-      this.setState({ ...state, error: error.toString() });
+      this.setState({ ...state, error: error.toString() })
     }
-  };
+  }
+
+  getChildContext = () => ({
+    live: {
+      ...this.state,
+      code: this.props.code,
+      onError: this.onError,
+      onChange: this.onChange
+    }
+  })
+
+  componentWillMount() {
+    const { code, scope, transformCode, noInline } = this.props
+
+    this.transpile({ code, scope, transformCode, noInline })
+  }
+
+  componentWillReceiveProps({ code, scope, noInline, transformCode }) {
+    if (
+      code !== this.props.code ||
+      scope !== this.props.scope ||
+      noInline !== this.props.noInline ||
+      transformCode !== this.props.transformCode
+    ) {
+      this.transpile({ code, scope, transformCode, noInline })
+    }
+  }
 
   render() {
-    const { children, code, language, theme, disabled } = this.props;
+    const {
+      children,
+      className,
+      code,
+      mountStylesheet,
+      noInline,
+      transformCode,
+      scope,
+      ...rest
+    } = this.props
 
     return (
-      <LiveContext.Provider
-        value={{
-          ...this.state,
-          code,
-          language,
-          theme,
-          disabled,
-          onError: this.onError,
-          onChange: this.onChange
-        }}
+      <div
+        className={cn('react-live', className)}
+        {...rest}
       >
+        {mountStylesheet && <Style />}
         {children}
-      </LiveContext.Provider>
-    );
+      </div>
+    )
   }
 }
+
+export default LiveProvider

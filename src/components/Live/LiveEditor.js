@@ -1,20 +1,24 @@
-import React from 'react';
-import LiveContext from './LiveContext';
-import Editor from '../Editor';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { LiveContextTypes } from './LiveProvider'
+import Editor from '../Editor'
 
-export default function LiveEditor(props) {
-  return (
-    <LiveContext.Consumer>
-      {({ code, language, theme, disabled, onChange }) => (
-        <Editor
-          theme={theme}
-          code={code}
-          language={language}
-          disabled={disabled}
-          onChange={onChange}
-          {...props}
-        />
-      )}
-    </LiveContext.Consumer>
-  );
-}
+const LiveEditor = (props, { live }) => (
+  <Editor
+    {...props}
+    code={live.code}
+    onChange={code => {
+      live.onChange(code)
+
+      if (typeof props.onChange === 'function') {
+        props.onChange(code)
+      }
+    }}
+  />
+)
+
+LiveEditor.contextTypes = LiveContextTypes
+LiveEditor.propTypes = { onChange: PropTypes.func }
+
+export default LiveEditor
+

@@ -1,10 +1,16 @@
-import React from 'react';
-import LiveContext from './LiveContext';
+import React from 'react'
+import { LiveContextTypes } from './LiveProvider'
+import cn from '../../utils/cn'
 
-export default function LiveError(props) {
-  return (
-    <LiveContext.Consumer>
-      {({ error }) => (error ? <pre {...props}>{error}</pre> : null)}
-    </LiveContext.Consumer>
-  );
-}
+const LiveError = ({ className, ...rest }, { live }) => live.error ? (
+  <div
+    {...rest}
+    className={cn('react-live-error', className)}
+  >
+    {live.error}
+  </div>
+) : null
+
+LiveError.contextTypes = LiveContextTypes
+
+export default LiveError

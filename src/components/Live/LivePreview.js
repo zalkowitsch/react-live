@@ -1,18 +1,20 @@
-import React from 'react';
-import LiveContext from './LiveContext';
+import React from 'react'
+import { LiveContextTypes } from './LiveProvider'
+import cn from '../../utils/cn'
 
-function LivePreview({ Component, ...rest }) {
+const LivePreview = ({ className, ...rest }, { live: { element }}) => {
+  const Element = element;
+
   return (
-    <Component {...rest}>
-      <LiveContext.Consumer>
-        {({ element: Element }) => Element && <Element />}
-      </LiveContext.Consumer>
-    </Component>
+    <div
+      {...rest}
+      className={cn('react-live-preview', className)}
+    >
+      {Element && <Element />}
+    </div>
   );
 }
 
-LivePreview.defaultProps = {
-  Component: 'div'
-};
+LivePreview.contextTypes = LiveContextTypes
 
-export default LivePreview;
+export default LivePreview
