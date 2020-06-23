@@ -13,6 +13,7 @@
     "prebuild:lib": "rm -rf lib/*",
     "build": "rollup -c",
     "prepublishOnly": "npm run build",
+    "deploy": "node deploy.js",
     "test": "jest",
     "test:typings": "typings-tester --dir typings"
   },
