@@ -1,6 +1,6 @@
 {
   "name": "@zestt-co/react-live",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ZESTT's fork of React Live",
   "main": "dist/react-live.cjs.js",
   "typings": "./typings/react-live.d.ts",
