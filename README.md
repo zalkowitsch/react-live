@@ -18,7 +18,7 @@ The library is structured modularly and lets you style its components as you wis
 
 ## Usage
 
-Install it with `yarn add @stp-systems/react-live` and try out this piece of JSX:
+Install it with `yarn add @zestt-co/react-live` and try out this piece of JSX:
 
 ```js
 import {
@@ -26,7 +26,7 @@ import {
   LiveEditor,
   LiveError,
   LivePreview
-} from '@stp-systems/react-live'
+} from '@zestt-co/react-live'
 
 <LiveProvider code="<strong>Hello World!</strong>">
   <LiveEditor />
