@@ -2283,12 +2283,10 @@ foreachasync@^3.0.0:
   resolved "https://registry.yarnpkg.com/foreachasync/-/foreachasync-3.0.0.tgz#5502987dc8714be3392097f32e0071c9dee07cf6"
   integrity sha1-VQKYfchxS+M5IJfzLgBxyd7gfPY=
 
-formidable-oss-badges@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/formidable-oss-badges/-/formidable-oss-badges-0.2.1.tgz#f380dc3effb1b780e44c632943cc9d1a451dd6a2"
-  integrity sha512-g1ZJKHzVUQzIO9jB4pN6ba37ubnhrgz+EXaMjbQq+euFW53an+tR0+hNyHuibt2HVzSoIhekXlcEYzknh/ycvA==
-  dependencies:
-    buble "0.19.6"
+formidable-oss-badges@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/formidable-oss-badges/-/formidable-oss-badges-0.3.6.tgz#24f113f2562c5fa1ca71ed824750021b79a8c824"
+  integrity sha512-gJjMlIJuvh3OJognQXWlui13RbqGn7ybU7lj3PcFnQiwaDq/NqrWiJxsJ+Fhb8XDrHHfxw52Pb3hI770HJXzJQ==
 
 forwarded@~0.1.2:
   version "0.1.2"
