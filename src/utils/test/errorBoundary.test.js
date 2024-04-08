@@ -1,27 +1,42 @@
-import React from 'react'
-import errorBoundary from '../transpile/errorBoundary'
-import { render } from 'enzyme'
+import React from 'react';
+import errorBoundary from '../transpile/errorBoundary';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 describe('errorBoundary', () => {
-  it('should wrap PFCs in an error boundary', () => {
-    const errorCb = jest.fn()
+  // Definindo um manipulador para erros não capturados para evitar que o Jest falhe o teste prematuramente
+  const originalError = console.error;
+  beforeAll(() => {
+    console.error = jest.fn();
+  });
 
-    const Component = errorBoundary(() => {
-      throw new Error('test')
-    }, errorCb)
+  afterAll(() => {
+    console.error = originalError;
+  });
 
-    expect(() => render(<Component />)).toThrowError('test');
-  })
+  it('should wrap PFCs in an error boundary and catch errors', () => {
+    const errorCb = jest.fn();
 
-  it('should wrap Components in an error boundary', () => {
-    const errorCb = jest.fn()
+    const ProblematicComponent = () => {
+      throw new Error('test');
+    };
+    const WrappedComponent = errorBoundary(ProblematicComponent, errorCb);
 
-    const Component = errorBoundary(class extends React.Component {
+    expect(() => render(<WrappedComponent />)).not.toThrow();
+    expect(errorCb).toHaveBeenCalled();
+  });
+
+  it('should wrap Components in an error boundary and catch errors', () => {
+    const errorCb = jest.fn();
+
+    class ProblematicComponent extends React.Component {
       render() {
-        throw new Error('test')
+        throw new Error('test');
       }
-    }, errorCb)
+    }
+    const WrappedComponent = errorBoundary(ProblematicComponent, errorCb);
 
-    expect(() => render(<Component />)).toThrowError('test');
-  })
-})
+    expect(() => render(<WrappedComponent />)).not.toThrow();
+    expect(errorCb).toHaveBeenCalled();
+  });
+});

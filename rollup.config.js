@@ -1,8 +1,8 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
-import replace from 'rollup-plugin-replace';
-import commonjs from 'rollup-plugin-commonjs';
-import babel from 'rollup-plugin-babel';
-import uglify from 'rollup-plugin-uglify-es';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import commonjs from '@rollup/plugin-commonjs';
+import babel from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
 import filesize from 'rollup-plugin-filesize';
 
 const plugins = [
@@ -12,19 +12,13 @@ const plugins = [
   }),
   commonjs({
     include: 'node_modules/**',
-    namedExports: {
-      'buble/dist/buble.deps': ['transform'],
-      buble: ['transform'],
-      'prismjs/components/prism-core': ['highlight', 'languages']
-    }
   }),
   babel({
     babelrc: false,
-    presets: [['env', { modules: false, loose: true }], 'react'],
+    presets: [['@babel/preset-env', { loose: true }], '@babel/preset-react'],
     plugins: [
-      'external-helpers',
-      'transform-object-rest-spread',
-      'transform-class-properties',
+      '@babel/plugin-transform-object-rest-spread',
+      '@babel/plugin-transform-class-properties',
       'transform-react-remove-prop-types'
     ].filter(Boolean)
   })
@@ -32,15 +26,17 @@ const plugins = [
 
 const devPlugins = plugins.concat([
   replace({
+    preventAssignment: true,
     'process.env.NODE_ENV': JSON.stringify('development')
   })
 ]);
 
 const prodPlugins = plugins.concat([
   replace({
+    preventAssignment: true,
     'process.env.NODE_ENV': JSON.stringify('production')
   }),
-  uglify(),
+  terser(),
   filesize()
 ]);
 
